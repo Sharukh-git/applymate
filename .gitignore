@@ -1,0 +1,15 @@
+# General
+node_modules/
+.env
+*.log
+
+# Frontend
+frontend/.next/
+frontend/out/
+
+# Backend
+backend/target/
+
+# macOS / VSCode
+.DS_Store
+.vscode/

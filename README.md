@@ -17,101 +17,45 @@ Built to help applicants tailor their resumes to job descriptions with real-time
 
 ---
 
-## 🛠️ Tech Stack
+## 🔧 Tech Stack
 
-**Frontend:**  
-- Next.js  
-- Tailwind CSS  
+### 🧠 AI & Processing
+- **OpenRouter API** – GPT-based AI analysis  
+- **BullMQ + Redis (Upstash)** – Job queuing and async task processing  
+- **Node.js (with TypeScript)** – Backend logic and API handling  
 
+### 🌐 Frontend
+- **Next.js (App Router)** – React-based frontend framework  
+- **Tailwind CSS** – Styling and responsive UI  
+- **Lucide-react** – UI icons  
+- **jsPDF / html2canvas** – For generating downloadable PDFs  
 
-**Backend:**  
-- Node.js + Express  
-- MongoDB (Mongoose)  
-- BullMQ + Redis (Upstash)  
-- OpenRouter / Gemini API (AI engine)  
+### ⚙️ Backend
+- **Express.js** – API routing and request handling  
+- **Multer** – File upload handling  
+- **OpenAI-compatible LLMs via OpenRouter** – AI inference  
+- **TypeScript** – Static typing and maintainability  
 
----
-
-## 🚀 Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/applymate.git
-cd applymate
-```
-
-### 2. Install dependencies
-
-Install both frontend and backend packages:
-
-```bash
-cd frontend
-npm install
-
-cd ../backend
-npm install
-```
-
-### 3. Configure environment variables
-
-Create `.env` files in both `frontend/` and `backend/` directories.  
-Refer to `.env.example` files in each folder.
-
-```bash
-cp frontend/.env.example frontend/.env
-cp backend/.env.example backend/.env
-```
-
-Fill in the required secrets.
-
-### 4. Run the app locally
-
-```bash
-# Start frontend
-cd frontend
-npm run dev
-
-# Start backend
-cd ../backend
-npm run dev
-```
+### 🧾 Database & Storage
+- **MongoDB Atlas** – Resume and job data storage  
+- **Upstash Redis** – Queue management for BullMQ  
 
 ---
 
-## 📁 Project Structure
+## 📽️ Demo
 
-```
-applymate/
-├── frontend/       # Next.js frontend
-├── backend/        # Express.js + MongoDB backend
-├── shared/         # Shared constants/types (optional)
-├── .gitignore
-├── README.md
-```
+A full walkthrough of the app, including AI analysis, resume matching, cover letter generation, and background scaling with BullMQ is available here:  
+👉 [Watch Demo on LinkedIn](https://www.linkedin.com/posts/sharukh-shaik-srk12_systemdesign-backenddevelopment-scalability-activity-7325903000915341312-X8Zx?utm_source=share&utm_medium=member_desktop&rcm=ACoAAE4qY5sBOu8vL04gy3FzT41ri91g-HtNwgw)
 
 ---
 
-## 🧪 To Run the Worker (for processing jobs)
+## 🚀 Deployment
 
-```bash
-cd backend
-npx ts-node src/workers/application.worker.ts
-```
-
----
-
-## 🌐 Deployment
-
-- Frontend: Vercel  
-- Backend: Render or Railway  
-- Redis: Upstash (serverless)  
-
+Public deployment coming soon. Stay tuned.
 
 ---
 
 
-## 🙌 Feedback
+## 🙌 Feedback Welcome
 
-Have suggestions or want to collaborate?  
-Open an issue or connect with me on [LinkedIn](https://www.linkedin.com/in/sharukh-shaik-srk12/)
+This project is still evolving. I’d love to hear your feedback or suggestions — feel free to open an issue or connect with me on [LinkedIn](https://www.linkedin.com/in/sharukh-shaik-srk12/).

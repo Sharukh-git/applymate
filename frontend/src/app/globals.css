@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: linear-gradient(to bottom right, #eef2f7, #f9f9ff);
+  --foreground: #1f1f1f;
+  --accent: #6366f1;
+  --font-sans: var(--font-geist-sans, 'Inter', sans-serif);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.4);
+}
+
+body {
+  @apply min-h-screen antialiased;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+.container-centered {
+  @apply max-w-2xl w-full mx-auto px-4 md:px-6 space-y-10 pt-16;
+}
+
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  @apply rounded-2xl shadow-xl p-6 space-y-4 transition-all;
+}
+
+.glass-card {
+  @apply bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200 shadow-md p-6;
+}
+
+.button-primary {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl font-semibold transition-all shadow-md hover:shadow-xl;
+}
+
+.button-secondary {
+  @apply bg-white/80 hover:bg-gray-100 text-gray-800 border px-6 py-2 rounded-xl font-medium transition-all shadow;
+}
+
+.section-box {
+  @apply border border-blue-100 p-6 rounded-xl bg-white/90 backdrop-blur-md shadow-md;
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f4f8;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #94a3b8;
+  border-radius: 4px;
+}
+
+
+h1, h2, h3, p {
+  @apply antialiased;
+}

@@ -4,5 +4,5 @@ dotenv.config();
 
 export const connection = new IORedis(process.env.REDIS_URL!, {
   maxRetriesPerRequest: null,
-  tls: {}, // Required for rediss:// (Upstash uses TLS)
+  tls: {}, 
 });

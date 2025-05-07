@@ -8,7 +8,7 @@ const applicationSchema = new mongoose.Schema({
   suggestedImprovements: [String],
   suggestedCourses: [String],
   
-  // ✅ Add these two:
+  
   status: {
     type: String,
     enum: ['pending', 'processing', 'done'],

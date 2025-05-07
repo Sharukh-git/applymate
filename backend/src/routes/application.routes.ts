@@ -6,9 +6,9 @@ import Application from '../models/application.model';
 import applicationQueue from '../queues/application.queue';
 
 const router = express.Router();
-const upload = multer(); // stores file in memory
+const upload = multer(); 
 
-// ✅ POST /analyze - PDF Upload & Extract Text
+
 router.post('/analyze', upload.single('resume'), async (req, res) => {
   try {
     const jobDescription = req.body.jobDescription;
@@ -32,7 +32,7 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
   }
 });
 
-// ✅ GET /results/:id
+
 router.get('/results/:id', async (req, res) => {
   const { id } = req.params;
   const app = await Application.findById(id);
@@ -40,7 +40,7 @@ router.get('/results/:id', async (req, res) => {
   res.json(app);
 });
 
-// ✅ POST /cover-letter/:id
+
 router.post('/cover-letter/:id', async (req, res) => {
   const { id } = req.params;
   const app = await Application.findById(id);

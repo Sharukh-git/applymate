@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { Worker } from 'bullmq';
 import { connection } from '../config/redis';
 import connectDB from '../config/db';
@@ -5,6 +7,8 @@ import Application from '../models/application.model';
 import { generateAIResponse } from '../config/openrouter';
 
 connectDB();
+
+
 
 async function main() {
   const worker = new Worker(

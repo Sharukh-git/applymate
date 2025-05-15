@@ -4,6 +4,8 @@ import pdfParse from 'pdf-parse';
 import { generateAIResponse } from '../config/openrouter';
 import Application from '../models/application.model';
 import applicationQueue from '../queues/application.queue';
+import mammoth from "mammoth";
+import fs from "fs";
 
 const router = express.Router();
 const upload = multer(); 
@@ -12,26 +14,39 @@ const upload = multer();
 router.post('/analyze', upload.single('resume'), async (req, res) => {
   try {
     const jobDescription = req.body.jobDescription;
-    const pdfBuffer = req.file?.buffer;
+    const fileBuffer = req.file?.buffer;
+    const mimeType = req.file?.mimetype;
 
-    if (!jobDescription || !pdfBuffer) {
+    if (!jobDescription || !fileBuffer || !mimeType) {
       return res.status(400).json({ message: 'Missing resume file or job description' });
     }
 
-    const parsed = await pdfParse(pdfBuffer);
-    const resumeText = parsed.text;
+    let resumeText = '';
+
+    if (mimeType === 'application/pdf') {
+      const parsed = await pdfParse(fileBuffer);
+      resumeText = parsed.text;
+    } else if (
+      mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      mimeType === 'application/msword'
+    ) {
+      const result = await mammoth.extractRawText({ buffer: fileBuffer });
+      resumeText = result.value;
+    } else {
+      return res.status(400).json({ message: 'Unsupported file format. Please upload PDF or Word.' });
+    }
 
     const app = new Application({ resumeText, jobDescription });
     await app.save();
 
     await applicationQueue.add('analyze', { applicationId: app._id });
     res.json({ id: app._id, status: 'queued' });
+
   } catch (error) {
-    console.error('❌ PDF parse or DB error:', error);
+    console.error('❌ Resume parse or DB error:', error);
     res.status(500).json({ message: 'Resume upload or processing failed' });
   }
 });
-
 
 router.get('/results/:id', async (req, res) => {
   const { id } = req.params;

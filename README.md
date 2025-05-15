@@ -7,7 +7,7 @@ Built to help applicants tailor their resumes to job descriptions with real-time
 
 ## ✨ Features
 
-- Upload your resume and job description
+- Upload your resume and job description (1500-word limit with live validation)
 - AI-powered match score and skill gap analysis
 - Instant improvement suggestions and upskilling resources
 - Auto-generated cover letter tailored to each job
@@ -22,7 +22,8 @@ Built to help applicants tailor their resumes to job descriptions with real-time
 ### 🧠 AI & Processing
 - **OpenRouter API** – GPT-based AI analysis  
 - **BullMQ + Redis (Upstash)** – Job queuing and async task processing  
-- **Node.js (with TypeScript)** – Backend logic and API handling  
+- **Node.js (with TypeScript)** – Backend logic and API handling
+- Mammoth.js– DOCX text extraction
 
 ### 🌐 Frontend
 - **Next.js (App Router)** – React-based frontend framework  

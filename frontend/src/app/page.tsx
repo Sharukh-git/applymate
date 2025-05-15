@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, LoaderCircle, XCircle } from "lucide-react";
+
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
 
@@ -22,6 +23,9 @@ function truncateFileName(name: string): string {
 
 
 export default function Home() {
+  const [uploadMessage, setUploadMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
@@ -33,7 +37,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    const saved = localStorage.getItem("applymate-data");
+    const saved = sessionStorage.getItem("applymate-data");
     if (saved) {
       const parsed = JSON.parse(saved);
       setJobDescription(parsed.jobDescription || "");
@@ -51,8 +55,11 @@ export default function Home() {
       alert("❌ File too large. Max allowed size is 5MB.");
       return;
     }
-    setResumeFile(file);
-    setFileName(file.name);
+    if (file) {
+  setResumeFile(file);
+  setFileName(file.name);
+  setUploadMessage(""); // ✅ clears warning after file upload
+}
   }
 };
 
@@ -90,6 +97,20 @@ export default function Home() {
           clearInterval(interval);
           setResult(data);
           setStatus("done");
+          sessionStorage.setItem("applymate-data", JSON.stringify({
+          jobDescription,
+          fileName,
+          result: data,
+          applicationId: id,
+          status: "done",
+}));
+
+          setTimeout(() => {
+    if (resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, 100);
+
 
           localStorage.setItem(
             "applymate-data",
@@ -133,21 +154,26 @@ export default function Home() {
 
           <div className="card backdrop-blur-xl">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-               <label className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded cursor-pointer text-sm font-medium border border-gray-300 shadow">
+               <label
+                tabIndex={0}
+                className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded cursor-pointer text-sm font-medium border border-gray-300 shadow">
                   <Upload size={16} className="mr-2" />
                    Choose File
                    <input
+                   ref={fileInputRef}
                     type="file"
                     accept=".pdf, .doc, .docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     className="hidden"
                     onChange={(e) => {
   const file = e.target.files?.[0];
   if (file) {
-    setFileName(file.name);
     setResumeFile(file);
+    setFileName(file.name);
+    setUploadMessage(""); // ✅ Clear warning here
   }
 }}
     />
+    
   </label>
 
   
@@ -159,6 +185,11 @@ export default function Home() {
     Uploaded: {truncateFileName(fileName)}
   </span>
 )}
+{uploadMessage && (
+  <p className="text-xs text-red-600 font-medium">
+    ⚠️ {uploadMessage}
+  </p>
+)}
 
 
 </div>
@@ -167,10 +198,8 @@ export default function Home() {
               placeholder="Paste job description here..."
               className="w-full h-40 p-3 rounded-xl shadow-inner border border-gray-200 bg-white/90 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               value={jobDescription}
-              onChange={(e) => {
-      setJobDescription(e.target.value);
- 
-  }}
+              onChange={(e) =>  setJobDescription(e.target.value)}
+  
 />
 
 <p className="text-xs mt-1 text-gray-500">
@@ -209,12 +238,16 @@ export default function Home() {
 
               <button
              onClick={() => {
+              setUploadMessage("No file selected. Please upload a document to continue.");
               setResumeFile(null);
               setJobDescription("");
               setFileName("");
               setResult(null);
               setStatus("idle");
               localStorage.removeItem("applymate-data");
+              if (fileInputRef.current) {
+    fileInputRef.current.value = "";
+  }
             }}
             className="inline-flex items-center justify-center border border-gray-300 text-gray-600 hover:text-gray-800 hover:border-gray-400 px-4 py-2 rounded-xl transition-all bg-white/70 backdrop-blur shadow-sm"
           >
@@ -232,7 +265,7 @@ export default function Home() {
           </div>
 
           {status === "done" && result && (
-            <div className="space-y-6">
+            <div ref={resultRef} className="space-y-6">
               <ScoreBox score={result.matchScore} />
               <Section title="Weak / Missing Skills" items={result.weakSkills} />
               <Section title="Resume Suggestions" items={result.suggestedImprovements} />

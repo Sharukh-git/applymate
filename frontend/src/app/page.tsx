@@ -6,6 +6,21 @@ import { Upload, LoaderCircle, XCircle } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
 
+function countWords(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function truncateFileName(name: string): string {
+  const extIndex = name.lastIndexOf('.');
+  if (extIndex === -1) return name;
+
+  const ext = name.slice(extIndex);
+  const base = name.slice(0, extIndex);
+
+  return base.length > 18 ? `${base.slice(0, 15)}...${ext}` : `${base}${ext}`;
+}
+
+
 export default function Home() {
   const [jobDescription, setJobDescription] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -29,13 +44,18 @@ export default function Home() {
     }
   }, []);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setResumeFile(file);
-      setFileName(file.name);
+ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    if (file.size > 5 * 1024 * 1024) {
+      alert("❌ File too large. Max allowed size is 5MB.");
+      return;
     }
-  };
+    setResumeFile(file);
+    setFileName(file.name);
+  }
+};
+
 
   const handleSubmit = async () => {
     if (!resumeFile || !jobDescription) return;
@@ -113,36 +133,79 @@ export default function Home() {
 
           <div className="card backdrop-blur-xl">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <label className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded cursor-pointer text-sm font-medium border border-gray-300 shadow">
-                <Upload size={16} className="mr-2" />
-                Choose File
-                <input type="file" className="hidden" onChange={handleFileChange} />
-              </label>
-              {fileName && (
-                <span className="text-sm text-green-700 font-medium">
-                  Uploaded: {fileName}
-                </span>
-              )}
-            </div>
+               <label className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded cursor-pointer text-sm font-medium border border-gray-300 shadow">
+                  <Upload size={16} className="mr-2" />
+                   Choose File
+                   <input
+                    type="file"
+                    accept=".pdf, .doc, .docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    className="hidden"
+                    onChange={(e) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    setFileName(file.name);
+    setResumeFile(file);
+  }
+}}
+    />
+  </label>
+
+  
+  {fileName && (
+  <span
+    className="text-sm text-green-700 font-medium inline-block max-w-[220px] overflow-hidden whitespace-nowrap text-ellipsis"
+    title={fileName}
+  >
+    Uploaded: {truncateFileName(fileName)}
+  </span>
+)}
+
+
+</div>
 
             <textarea
               placeholder="Paste job description here..."
               className="w-full h-40 p-3 rounded-xl shadow-inner border border-gray-200 bg-white/90 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value)}
-            />
+              onChange={(e) => {
+      setJobDescription(e.target.value);
+ 
+  }}
+/>
 
+<p className="text-xs mt-1 text-gray-500">
+  Max 1500 words. Current: {countWords(jobDescription)}
+</p>
+
+{countWords(jobDescription) > 1500 && (
+  <p className="text-xs text-red-600 font-medium mt-1">
+    ⚠️ Job description exceeds 1500 words. Please shorten it to continue.
+  </p>
+)}
             <div className="flex flex-col md:flex-row gap-3">
               <button
-                onClick={handleSubmit}
-                disabled={status === "processing"}
-                className="button-primary"
-              >
-                {status === "processing" ? (
-                  <LoaderCircle size={18} className="animate-spin mr-2" />
-                ) : null}
-                {status === "processing" ? "Analyzing..." : "Analyze"}
-              </button>
+               onClick={handleSubmit}
+               disabled={
+               status === "processing" ||
+               !resumeFile ||
+              jobDescription.trim().length === 0 ||
+               countWords(jobDescription) > 1500           
+                }
+           className={`button-primary ${
+            status === "processing" ||
+             !resumeFile ||
+               jobDescription.trim().length === 0 ||
+               countWords(jobDescription) > 1500
+              ? "opacity-50 cursor-not-allowed"
+               : ""
+  }`}
+>
+  {status === "processing" ? (
+    <LoaderCircle size={18} className="animate-spin mr-2" />
+  ) : null}
+  {status === "processing" ? "Analyzing..." : "Analyze"}
+</button>
+
 
               <button
              onClick={() => {

@@ -5,6 +5,10 @@ import { connection } from '../config/redis';
 import connectDB from '../config/db';
 import Application from '../models/application.model';
 import { generateAIResponse } from '../config/openrouter';
+import fs from 'fs';
+import path from 'path';
+import mammoth from 'mammoth';
+import pdfParse from 'pdf-parse';
 
 connectDB();
 

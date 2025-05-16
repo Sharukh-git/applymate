@@ -29,7 +29,12 @@ export default function Home() {
   const [jobDescription, setJobDescription] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+  matchScore: number;
+  weakSkills: string[];
+  suggestedImprovements: string[];
+  suggestedCourses: string[];
+} | null>(null);
   const [applicationId, setApplicationId] = useState("");
   const [status, setStatus] = useState<"idle" | "queued" | "processing" | "done" | "error">("idle");
   const [generatingCover, setGeneratingCover] = useState(false);
@@ -82,7 +87,7 @@ export default function Home() {
       setApplicationId(data.id);
       setStatus("processing");
       pollForResults(data.id);
-    } catch (err) {
+    } catch  {
       setStatus("error");
     }
   };
@@ -160,19 +165,13 @@ export default function Home() {
                   <Upload size={16} className="mr-2" />
                    Choose File
                    <input
-                   ref={fileInputRef}
-                    type="file"
-                    accept=".pdf, .doc, .docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    className="hidden"
-                    onChange={(e) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    setResumeFile(file);
-    setFileName(file.name);
-    setUploadMessage(""); // ✅ Clear warning here
-  }
-}}
-    />
+  ref={fileInputRef}
+  type="file"
+  accept=".pdf, .doc, .docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  className="hidden"
+  onChange={handleFileChange}
+/>
+
     
   </label>
 

@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
+
 import { Worker } from 'bullmq';
 import { connection } from '../config/redis';
 import connectDB from '../config/db';
@@ -10,9 +11,9 @@ import path from 'path';
 import mammoth from 'mammoth';
 import pdfParse from 'pdf-parse';
 
+import http from 'http'; 
+
 connectDB();
-
-
 
 async function main() {
   const worker = new Worker(
@@ -24,7 +25,7 @@ async function main() {
 
       app.status = 'processing';
       await app.save();
-     // await new Promise(resolve => setTimeout(resolve, 5000));
+
       const prompt = `${app.resumeText}<<<JD>>>${app.jobDescription}`;
       const result = await generateAIResponse(prompt);
 
@@ -51,3 +52,9 @@ async function main() {
 main().catch(err => {
   console.error('❌ Worker failed to start:', err);
 });
+
+//  Dummy HTTP listener to make Render happy
+http.createServer((_, res) => {
+  res.writeHead(200);
+  res.end('Worker running');
+}).listen(process.env.PORT || 3000);

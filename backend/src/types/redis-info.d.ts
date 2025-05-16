@@ -1,5 +1,9 @@
 declare module 'redis-info' {
-  // Fallback to "any" type for now to unblock build
-  const redisInfo: any;
-  export = redisInfo;
+  interface RedisInfo {
+    [key: string]: string | number;
+  }
+
+  function parse(info: string): RedisInfo;
+
+  export = parse;
 }

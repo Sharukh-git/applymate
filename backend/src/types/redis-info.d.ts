@@ -1,9 +1,10 @@
 declare module 'redis-info' {
-  interface RedisInfo {
+  
+  export type RedisInfo = {
     [key: string]: string | number;
-  }
+  };
 
-  function parse(info: string): RedisInfo;
-
-  export = parse;
+  
+  const parse: (info: string) => RedisInfo;
+  export default parse;
 }

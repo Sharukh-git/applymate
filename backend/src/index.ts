@@ -10,8 +10,19 @@ connectDB();
 
 const app = express();
 const PORT = 5000;
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',');
 
-app.use(cors());
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins?.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 app.use('/', dashboardApp);
 app.use('/api', applicationRoutes);

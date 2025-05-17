@@ -57,4 +57,4 @@ main().catch(err => {
 http.createServer((_, res) => {
   res.writeHead(200);
   res.end('Worker running');
-}).listen(process.env.PORT || 3000);
+}).listen(process.env.PORT || 3001);

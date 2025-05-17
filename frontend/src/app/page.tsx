@@ -3,7 +3,7 @@
 import { useState, useEffect,useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, LoaderCircle, XCircle } from "lucide-react";
-
+import AuthButtons from "@/components/AuthButtons";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
 
@@ -149,6 +149,7 @@ export default function Home() {
   return (
     <>
       <section className="min-h-screen w-full bg-gradient-to-br from-indigo-50 to-white px-4 py-10">
+        <AuthButtons />
         <div className="max-w-2xl mx-auto space-y-8">
           <div className="text-center animate-fade-in">
             <h1 className="text-5xl font-extrabold tracking-tight text-indigo-900 drop-shadow-md">

@@ -38,6 +38,7 @@ export default function Home() {
   const [applicationId, setApplicationId] = useState("");
   const [status, setStatus] = useState<"idle" | "queued" | "processing" | "done" | "error">("idle");
   const [generatingCover, setGeneratingCover] = useState(false);
+  const [fileSizeMB, setFileSizeMB] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -63,6 +64,7 @@ export default function Home() {
     if (file) {
   setResumeFile(file);
   setFileName(file.name);
+  setFileSizeMB((file.size / (1024 * 1024)).toFixed(2)); // MB rounded
   setUploadMessage(""); // ✅ clears warning after file upload
 }
   }
@@ -174,14 +176,14 @@ export default function Home() {
 
     
   </label>
-
+  <p className="text-xs text-gray-500 mt-1 ml-1">Max file size: 5MB</p>
   
   {fileName && (
   <span
     className="text-sm text-green-700 font-medium inline-block max-w-[220px] overflow-hidden whitespace-nowrap text-ellipsis"
     title={fileName}
   >
-    Uploaded: {truncateFileName(fileName)}
+    Uploaded: {truncateFileName(fileName)} {fileSizeMB ? ` (${fileSizeMB} MB)` : ""}
   </span>
 )}
 {uploadMessage && (
